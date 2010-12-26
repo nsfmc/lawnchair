@@ -51,7 +51,19 @@ var LawnchairAdaptorHelpers = {
 		}
 		return uuid.join('');
 	},
-
+  
+  // parse a json serialized date from douglas crockford's json2.js
+  parseISODate: function (key, value) {
+    var a;
+    if (typeof value === 'string') {
+      a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+      if (a) {
+        return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
+      }
+    }
+    return value;
+  },
+  
 	// Serialize a JSON object as a string.
 	serialize: function(obj) {
 		var r = '';
@@ -61,6 +73,8 @@ var LawnchairAdaptorHelpers = {
 
 	// Deserialize JSON.
 	deserialize: function(json) {
-		return eval('(' + json + ')');
+	  return JSON.parse(json);
+	  // uncomment to parse Date strings
+	  // return JSON.parse(json, this.parseISODate);
 	}
 };
